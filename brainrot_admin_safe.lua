@@ -1,126 +1,41 @@
--- Brainrot Server Admin Panel (Safe & Mobile GUI)
-local Players = game:GetService("Players")
-local StarterGui = game:GetService("StarterGui")
-local LocalPlayer = Players.LocalPlayer
-
--- Evita duplicar GUI
-if game.CoreGui:FindFirstChild("BrainrotServerGUI") then
-    game.CoreGui.BrainrotServerGUI:Destroy()
+-- Brainrot Hub | Speed, Jump & Sound ID
+local success, redzlib = pcall(function()
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/tlredz/Library/refs/heads/main/V5/Source.lua"))()
+end)
+if not success then
+    warn("RedzLib não carregou.")
+    return
 end
 
--- Criar ScreenGui
-local screen = Instance.new("ScreenGui")
-screen.Name = "BrainrotServerGUI"
-screen.ResetOnSpawn = false
-screen.Parent = game.CoreGui
+-- Criar Window
+local Window = redzlib:MakeWindow({
+    Title = "🧠 Brainrot Server",
+    SubTitle = "Speed / Jump / Sound",
+    SaveFolder = ""
+})
 
--- Criar Frame principal
-local frame = Instance.new("Frame", screen)
-frame.Size = UDim2.new(0, 380, 0, 260)
-frame.Position = UDim2.new(0.5, -190, 0.5, -130)
-frame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
-frame.BorderSizePixel = 0
-frame.Active = true
-frame.Draggable = true
-frame.ClipsDescendants = true
+-- Botão minimizar no canto
+Window:AddMinimizeButton({
+    Button = { 
+        Image = "rbxassetid://108738805961062",
+        Size = UDim2.fromOffset(60, 60),
+        BackgroundTransparency = 0
+    },
+    Corner = { CornerRadius = UDim.new(0, 6) }
+})
 
--- Título
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, -10, 0, 36)
-title.Position = UDim2.new(0, 10, 0, 8)
-title.BackgroundTransparency = 1
-title.Text = "🧠 Brainrot Server"
-title.Font = Enum.Font.GothamBold
-title.TextSize = 18
-title.TextColor3 = Color3.fromRGB(0, 200, 255)
-title.TextStrokeTransparency = 0.5
-title.TextXAlignment = Enum.TextXAlignment.Left
+-- Aba principal
+local Main = Window:MakeTab({"Main", "star"})
 
--- Botão fechar
-local closeBtn = Instance.new("TextButton", frame)
-closeBtn.Size = UDim2.new(0, 60, 0, 28)
-closeBtn.Position = UDim2.new(1, -70, 0, 8)
-closeBtn.Text = "Fechar"
-closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 14
-closeBtn.BackgroundColor3 = Color3.fromRGB(220, 50, 50)
-closeBtn.TextColor3 = Color3.fromRGB(255,255,255)
-
--- Botão minimizar
-local minBtn = Instance.new("TextButton", frame)
-minBtn.Size = UDim2.new(0, 60, 0, 28)
-minBtn.Position = UDim2.new(1, -140, 0, 8)
-minBtn.Text = "Minimizar"
-minBtn.Font = Enum.Font.GothamBold
-minBtn.TextSize = 14
-minBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 220)
-minBtn.TextColor3 = Color3.fromRGB(255,255,255)
-
--- Container do conteúdo
-local content = Instance.new("Frame", frame)
-content.Size = UDim2.new(1, -20, 1, -56)
-content.Position = UDim2.new(0, 10, 0, 48)
-content.BackgroundTransparency = 1
-
--- Funções para labels e boxes
-local function makeLabel(parent, text, y)
-    local lbl = Instance.new("TextLabel", parent)
-    lbl.Size = UDim2.new(0, 140, 0, 22)
-    lbl.Position = UDim2.new(0, 10, 0, y)
-    lbl.BackgroundTransparency = 1
-    lbl.Text = text
-    lbl.Font = Enum.Font.GothamBold
-    lbl.TextSize = 14
-    lbl.TextColor3 = Color3.fromRGB(0, 200, 255)
-    lbl.TextXAlignment = Enum.TextXAlignment.Left
-    return lbl
-end
-
-local function makeBox(parent, placeholder, y)
-    local box = Instance.new("TextBox", parent)
-    box.Size = UDim2.new(0, 150, 0, 26)
-    box.Position = UDim2.new(0, 160, 0, y)
-    box.PlaceholderText = placeholder
-    box.Text = ""
-    box.ClearTextOnFocus = false
-    box.Font = Enum.Font.GothamBold
-    box.TextSize = 14
-    box.TextColor3 = Color3.fromRGB(255, 255, 0)
-    box.BackgroundColor3 = Color3.fromRGB(20,20,30)
-    box.BorderSizePixel = 0
-    box.TextXAlignment = Enum.TextXAlignment.Center
-    return box
-end
-
--- Labels e boxes
-makeLabel(content, "WalkSpeed (Speed):", 8)
-local speedBox = makeBox(content, "16", 6)
-makeLabel(content, "JumpPower (Jump):", 44)
-local jumpBox = makeBox(content, "50", 42)
-
--- Função criar botões
-local function makeBtn(parent, text, x, y, w, h, color, callback)
-    local btn = Instance.new("TextButton", parent)
-    btn.Size = UDim2.new(0, w or 140, 0, h or 28)
-    btn.Position = UDim2.new(0, x, 0, y)
-    btn.Text = text
-    btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 14
-    btn.BackgroundColor3 = color or Color3.fromRGB(0,120,220)
-    btn.TextColor3 = Color3.fromRGB(255,255,255)
-    btn.AutoButtonColor = true
-    btn.MouseButton1Click:Connect(callback)
-    return btn
-end
-
--- Funções seguras
+-- Função humanoid
 local function getHumanoid()
-    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local player = game.Players.LocalPlayer
+    local char = player.Character or player.CharacterAdded:Wait()
     return char:FindFirstChildOfClass("Humanoid")
 end
 
-local defaultSpeed = 16
-local defaultJump = 50
+-- Valores padrão
+local defaultSpeed, defaultJump = 16, 50
 do
     local h = getHumanoid()
     if h then
@@ -129,51 +44,122 @@ do
     end
 end
 
-local function safeSetWalkSpeed(val)
-    local h = getHumanoid()
-    if h and tonumber(val) then h.WalkSpeed = tonumber(val) end
-end
+-- Speed textbox
+local speedBox = Main:AddTextBox({
+    Name = "Speed",
+    Default = tostring(defaultSpeed),
+    Placeholder = "Digite a velocidade",
+    Callback = function(val)
+        local h = getHumanoid()
+        if h then h.WalkSpeed = tonumber(val) or defaultSpeed end
+    end
+})
 
-local function safeSetJumpPower(val)
-    local h = getHumanoid()
-    if h and tonumber(val) then h.JumpPower = tonumber(val) end
-end
+-- Jump textbox
+local jumpBox = Main:AddTextBox({
+    Name = "Jump",
+    Default = tostring(defaultJump),
+    Placeholder = "Digite JumpPower",
+    Callback = function(val)
+        local h = getHumanoid()
+        if h then h.JumpPower = tonumber(val) or defaultJump end
+    end
+})
 
--- Botões aplicar/reset
-makeBtn(content, "Aplicar Speed", 10, 84, 140, 28, Color3.fromRGB(0,120,220), function()
-    safeSetWalkSpeed(speedBox.Text ~= "" and speedBox.Text or defaultSpeed)
-end)
-makeBtn(content, "Reset Speed", 160, 84, 140, 28, Color3.fromRGB(255,150,0), function()
-    safeSetWalkSpeed(defaultSpeed)
-    speedBox.Text = tostring(defaultSpeed)
-end)
-makeBtn(content, "Aplicar Jump", 10, 124, 140, 28, Color3.fromRGB(0,120,220), function()
-    safeSetJumpPower(jumpBox.Text ~= "" and jumpBox.Text or defaultJump)
-end)
-makeBtn(content, "Reset Jump", 160, 124, 140, 28, Color3.fromRGB(255,150,0), function()
-    safeSetJumpPower(defaultJump)
-    jumpBox.Text = tostring(defaultJump)
-end)
+-- Sound ID textbox
+local soundBox = Main:AddTextBox({
+    Name = "Sound ID",
+    Default = "",
+    Placeholder = "Digite ID do som",
+    Callback = function(val) end
+})
 
--- fechar/minimizar
-closeBtn.MouseButton1Click:Connect(function()
-    StarterGui:SetCore("SendNotification", {Title="Brainrot Server", Text="Obrigado por usar!", Duration=4})
-    screen:Destroy()
-end)
+-- Botão aplicar speed
+Main:AddButton({
+    Title = "Aplicar Speed",
+    Description = "Aplica o valor do textbox",
+    Callback = function()
+        local h = getHumanoid()
+        if h then h.WalkSpeed = tonumber(speedBox:GetText()) or defaultSpeed end
+    end
+})
 
-local minimized = false
-minBtn.MouseButton1Click:Connect(function()
-    minimized = not minimized
-    content.Visible = not minimized
-    minBtn.Text = minimized and "Restaurar" or "Minimizar"
-end)
+-- Botão reset speed
+Main:AddButton({
+    Title = "Reset Speed",
+    Description = "Reseta para padrão",
+    Callback = function()
+        local h = getHumanoid()
+        if h then
+            h.WalkSpeed = defaultSpeed
+            speedBox:SetText(tostring(defaultSpeed))
+        end
+    end
+})
 
--- Enter aplica automaticamente
-speedBox.FocusLost:Connect(function(enter)
-    if enter then safeSetWalkSpeed(speedBox.Text ~= "" and speedBox.Text or defaultSpeed) end
-end)
-jumpBox.FocusLost:Connect(function(enter)
-    if enter then safeSetJumpPower(jumpBox.Text ~= "" and jumpBox.Text or defaultJump) end
-end)
+-- Botão aplicar jump
+Main:AddButton({
+    Title = "Aplicar Jump",
+    Description = "Aplica o valor do textbox",
+    Callback = function()
+        local h = getHumanoid()
+        if h then h.JumpPower = tonumber(jumpBox:GetText()) or defaultJump end
+    end
+})
 
-print("Brainrot Server GUI carregada com sucesso!")
+-- Botão reset jump
+Main:AddButton({
+    Title = "Reset Jump",
+    Description = "Reseta para padrão",
+    Callback = function()
+        local h = getHumanoid()
+        if h then
+            h.JumpPower = defaultJump
+            jumpBox:SetText(tostring(defaultJump))
+        end
+    end
+})
+
+-- Botão tocar som
+Main:AddButton({
+    Title = "▶️ Tocar som",
+    Description = "Toca o som do ID",
+    Callback = function()
+        local id = tonumber(soundBox:GetText())
+        if id then
+            local sound = Instance.new("Sound", workspace)
+            sound.SoundId = "rbxassetid://"..id
+            sound.Volume = 5
+            sound:Play()
+            task.delay(10,function() sound:Destroy() end)
+        end
+    end
+})
+
+-- Botão minimizar dentro do menu
+Main:AddButton({
+    Title = "🟢 Minimizar",
+    Description = "Minimiza/Maximiza painel",
+    Callback = function()
+        Window:Minimize()
+    end
+})
+
+-- Botão fechar com notificação
+Window:AddCloseButton({
+    Button = {Text="Fechar", BackgroundColor=Color3.fromRGB(0,170,255), TextColor=Color3.fromRGB(255,255,255)},
+    Callback = function()
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Brainrot Server",
+            Text = "Obrigado por usar!",
+            Duration = 4
+        })
+    end
+})
+
+-- Notificação de inicialização
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Brainrot Server",
+    Text = "Painel Speed/Jump/Sound carregado!",
+    Duration = 4
+})
