@@ -51,7 +51,7 @@ Main:AddButton({
 
 -- Caixa de som personalizada
 Main:AddButton({
-    Title = "🎵 Box Sound Zeron",
+    Title = "🎵 bombox zerin",
     Description = "Tocador de música customizado",
     Callback = function()
         local gui = Instance.new("ScreenGui", game.CoreGui)
