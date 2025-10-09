@@ -1,0 +1,201 @@
+-- Script seguro: Mensagem pública + Spawn de "boneco grande" com decal fornecido
+-- NÃO HACK; apenas cria GUI local + envia via SayMessageRequest (se disponível)
+-- e cria um modelo grande usando o decal: 98559512374869
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+local player = Players.LocalPlayer
+
+-- tenta achar SayMessageRequest (sistema padrão de chat)
+local success, SayMessageRequest = pcall(function()
+    return ReplicatedStorage:WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest")
+end)
+if not success or not SayMessageRequest then
+    warn("SayMessageRequest não encontrado — o jogo pode usar chat customizado.")
+end
+
+-- cria ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "TuberToolsGui_" .. tostring(math.random(1000,9999))
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Frame principal (móvel)
+local frame = Instance.new("Frame")
+frame.Name = "MainFrame"
+frame.Size = UDim2.new(0, 380, 0, 140)
+frame.Position = UDim2.new(0.5, -190, 0.12, 0)
+frame.AnchorPoint = Vector2.new(0.5, 0)
+frame.BackgroundColor3 = Color3.fromRGB(10,18,35)
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+frame.Active = true
+frame.Draggable = true
+local uic = Instance.new("UICorner", frame); uic.CornerRadius = UDim.new(0,8)
+
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 28)
+title.Position = UDim2.new(0,0,0,0)
+title.BackgroundTransparency = 1
+title.Text = "💬 Tuber Sender + Dummy"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 16
+title.TextColor3 = Color3.fromRGB(155,205,255)
+
+-- Close
+local closeBtn = Instance.new("TextButton", frame)
+closeBtn.Size = UDim2.new(0, 22, 0, 22)
+closeBtn.Position = UDim2.new(1, -26, 0, 4)
+closeBtn.Text = "✕"
+closeBtn.Font = Enum.Font.Gotham
+closeBtn.TextSize = 14
+closeBtn.BackgroundTransparency = 0.6
+closeBtn.MouseButton1Click:Connect(function() screenGui:Destroy() end)
+
+-- TextBox
+local textBox = Instance.new("TextBox", frame)
+textBox.Size = UDim2.new(1, -16, 0, 48)
+textBox.Position = UDim2.new(0, 8, 0, 34)
+textBox.PlaceholderText = "Digite a mensagem..."
+textBox.ClearTextOnFocus = false
+textBox.BackgroundColor3 = Color3.fromRGB(14,24,40)
+textBox.TextColor3 = Color3.fromRGB(230,230,230)
+textBox.Font = Enum.Font.Gotham
+textBox.TextSize = 16
+Instance.new("UICorner", textBox).CornerRadius = UDim.new(0,6)
+
+-- Send button
+local sendBtn = Instance.new("TextButton", frame)
+sendBtn.Size = UDim2.new(0, 90, 0, 32)
+sendBtn.Position = UDim2.new(1, -100, 1, -40)
+sendBtn.Text = "Enviar"
+sendBtn.Font = Enum.Font.GothamBold
+sendBtn.TextSize = 16
+sendBtn.BackgroundColor3 = Color3.fromRGB(35,120,220)
+Instance.new("UICorner", sendBtn).CornerRadius = UDim.new(0,6)
+
+-- Clear button
+local clearBtn = Instance.new("TextButton", frame)
+clearBtn.Size = UDim2.new(0, 66, 0, 26)
+clearBtn.Position = UDim2.new(0, 8, 1, -36)
+clearBtn.Text = "Limpar"
+clearBtn.Font = Enum.Font.Gotham
+clearBtn.TextSize = 14
+clearBtn.BackgroundTransparency = 0.3
+Instance.new("UICorner", clearBtn).CornerRadius = UDim.new(0,6)
+
+-- Botão para spawnar boneco grande
+local spawnBtn = Instance.new("TextButton", frame)
+spawnBtn.Size = UDim2.new(0, 150, 0, 28)
+spawnBtn.Position = UDim2.new(0.5, -75, 1, -36)
+spawnBtn.AnchorPoint = Vector2.new(0.5,0)
+spawnBtn.Text = "Spawnar boneco grande"
+spawnBtn.Font = Enum.Font.GothamBold
+spawnBtn.TextSize = 14
+spawnBtn.BackgroundColor3 = Color3.fromRGB(90,20,180)
+Instance.new("UICorner", spawnBtn).CornerRadius = UDim.new(0,6)
+
+-- função de envio que usa SayMessageRequest se disponível
+local function sendMessage(msg)
+    if not msg or msg:match("^%s*$") then return end
+    if SayMessageRequest and type(SayMessageRequest.FireServer) == "function" then
+        pcall(function()
+            SayMessageRequest:FireServer(msg, "All")
+        end)
+    else
+        -- fallback: aviso local
+        warn("SayMessageRequest indisponível — não foi possível enviar para todos.")
+    end
+end
+
+sendBtn.MouseButton1Click:Connect(function()
+    sendMessage(textBox.Text)
+    textBox.Text = ""
+end)
+
+textBox.FocusLost:Connect(function(enter)
+    if enter then
+        sendMessage(textBox.Text)
+        textBox.Text = ""
+    end
+end)
+
+clearBtn.MouseButton1Click:Connect(function() textBox.Text = "" end)
+
+-- função para criar um "boneco grande" simples com decal nas faces do head
+local function spawnBigDummy(decalId)
+    -- remove dummy anterior se existir
+    for _, v in ipairs(Workspace:GetChildren()) do
+        if v:IsA("Model") and v.Name == "Tubers93_BigDummy" then
+            v:Destroy()
+        end
+    end
+
+    local model = Instance.new("Model")
+    model.Name = "Tubers93_BigDummy"
+    model.Parent = Workspace
+
+    -- posição de spawn: um pouco à frente do jogador (se existir)
+    local spawnPos = Vector3.new(0, 5, 0)
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = player.Character.HumanoidRootPart
+        spawnPos = hrp.Position + (hrp.CFrame.LookVector * 8) + Vector3.new(0, 0, 0)
+    elseif Workspace:FindFirstChild("SpawnLocation") then
+        spawnPos = Workspace.SpawnLocation.Position + Vector3.new(0,5,0)
+    end
+
+    -- cria um "head" grande (part)
+    local head = Instance.new("Part")
+    head.Name = "Head"
+    head.Size = Vector3.new(8,8,8) -- bem grande
+    head.Position = spawnPos + Vector3.new(0, 4, 0)
+    head.Anchored = true
+    head.CanCollide = false
+    head.Parent = model
+
+    -- aplica decal nas faces (usa o id informado)
+    local faces = {Enum.NormalId.Front, Enum.NormalId.Back, Enum.NormalId.Left, Enum.NormalId.Right, Enum.NormalId.Top, Enum.NormalId.Bottom}
+    for _, face in ipairs(faces) do
+        local dec = Instance.new("Decal")
+        dec.Face = face
+        dec.Texture = "rbxassetid://" .. tostring(decalId)
+        dec.Parent = head
+    end
+
+    -- cria torso simples (opcional)
+    local torso = Instance.new("Part")
+    torso.Name = "Torso"
+    torso.Size = Vector3.new(6,8,3)
+    torso.Position = head.Position + Vector3.new(0, -6, 0)
+    torso.Anchored = true
+    torso.CanCollide = false
+    torso.Parent = model
+
+    -- humanoid (só pra aparecer nome se quiser)
+    local humanoid = Instance.new("Humanoid")
+    humanoid.Name = "Humanoid"
+    humanoid.Parent = model
+
+    model.PrimaryPart = head
+    model:SetPrimaryPartCFrame(CFrame.new(head.Position))
+
+    return model
+end
+
+-- ID do decal que o usuário pediu
+local decalId = 98559512374869
+
+spawnBtn.MouseButton1Click:Connect(function()
+    spawnBigDummy(decalId)
+end)
+
+-- dica
+local tip = Instance.new("TextLabel", frame)
+tip.Size = UDim2.new(1, -16, 0, 16)
+tip.Position = UDim2.new(0,8,1,-16)
+tip.BackgroundTransparency = 1
+tip.Text = "Envio via sistema padrão de chat. Boneco criado localmente no workspace."
+tip.Font = Enum.Font.Gotham
+tip.TextSize = 12
+tip.TextColor3 = Color3.fromRGB(160,180,200)
