@@ -1,0 +1,136 @@
+-- 🎩 Chift Executer v2.5
+-- Tema azul e preto + botão 🎩/🎩🔒 para abrir e fechar
+-- by zerin
+
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local TextBox = Instance.new("TextBox")
+local Execute = Instance.new("TextButton")
+local Clear = Instance.new("TextButton")
+local ToggleButton = Instance.new("TextButton")
+
+ScreenGui.Name = "ChiftExecuter"
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ResetOnSpawn = false
+
+-- Painel Principal
+Frame.Name = "Main"
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.3, 0, 0.3, 0)
+Frame.Size = UDim2.new(0, 400, 0, 260)
+Frame.Active = true
+Frame.Draggable = true
+Frame.Visible = true
+
+-- Efeito neon azul
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(0, 170, 255)
+UIStroke.Thickness = 2.3
+UIStroke.Parent = Frame
+
+-- Título
+Title.Name = "Title"
+Title.Parent = Frame
+Title.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Title.BorderSizePixel = 0
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "🎩 CHIFT EXECUTER 🎩"
+Title.TextColor3 = Color3.fromRGB(0, 170, 255)
+Title.TextSize = 22
+Title.TextStrokeTransparency = 0
+
+-- Caixa de Texto
+TextBox.Name = "ScriptBox"
+TextBox.Parent = Frame
+TextBox.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+TextBox.Position = UDim2.new(0.05, 0, 0.2, 0)
+TextBox.Size = UDim2.new(0.9, 0, 0.55, 0)
+TextBox.Font = Enum.Font.Code
+TextBox.PlaceholderText = "-- Cole seu script aqui"
+TextBox.Text = ""
+TextBox.TextColor3 = Color3.fromRGB(0, 170, 255)
+TextBox.TextSize = 16
+TextBox.TextXAlignment = Enum.TextXAlignment.Left
+TextBox.TextYAlignment = Enum.TextYAlignment.Top
+TextBox.MultiLine = true
+TextBox.ClearTextOnFocus = false
+
+-- Botão Executar
+Execute.Name = "Execute"
+Execute.Parent = Frame
+Execute.BackgroundColor3 = Color3.fromRGB(0, 85, 170)
+Execute.Position = UDim2.new(0.05, 0, 0.8, 0)
+Execute.Size = UDim2.new(0.42, 0, 0.15, 0)
+Execute.Font = Enum.Font.GothamBold
+Execute.Text = "▶ EXECUTAR"
+Execute.TextColor3 = Color3.fromRGB(255, 255, 255)
+Execute.TextSize = 18
+Execute.MouseButton1Click:Connect(function()
+    local code = TextBox.Text
+    if code and code ~= "" then
+        loadstring(code)()
+    end
+end)
+
+-- Botão Limpar
+Clear.Name = "Clear"
+Clear.Parent = Frame
+Clear.BackgroundColor3 = Color3.fromRGB(0, 85, 170)
+Clear.Position = UDim2.new(0.53, 0, 0.8, 0)
+Clear.Size = UDim2.new(0.42, 0, 0.15, 0)
+Clear.Font = Enum.Font.GothamBold
+Clear.Text = "🧹 LIMPAR"
+Clear.TextColor3 = Color3.fromRGB(255, 255, 255)
+Clear.TextSize = 18
+Clear.MouseButton1Click:Connect(function()
+    TextBox.Text = ""
+end)
+
+-- 🎩 Botão de Abrir/Fechar
+ToggleButton.Name = "Toggle"
+ToggleButton.Parent = ScreenGui
+ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 85, 170)
+ToggleButton.Size = UDim2.new(0, 50, 0, 50)
+ToggleButton.Position = UDim2.new(0.9, 0, 0.1, 0)
+ToggleButton.Font = Enum.Font.GothamBold
+ToggleButton.Text = "🎩"
+ToggleButton.TextSize = 22
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.Active = true
+ToggleButton.Draggable = true
+
+-- Sistema de abrir/fechar 🎩🔒
+local aberto = true
+ToggleButton.MouseButton1Click:Connect(function()
+	aberto = not aberto
+	if aberto then
+		Frame.Visible = true
+		ToggleButton.Text = "🎩"
+	else
+		Frame.Visible = false
+		ToggleButton.Text = "🎩🔒"
+	end
+end)
+
+-- Bordas arredondadas
+for _, v in pairs({Frame, Execute, Clear, TextBox, ToggleButton}) do
+	local UICorner = Instance.new("UICorner")
+	UICorner.CornerRadius = UDim.new(0, 8)
+	UICorner.Parent = v
+end
+
+-- Sombra Neon
+local Shadow = Instance.new("ImageLabel")
+Shadow.Parent = Frame
+Shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+Shadow.BackgroundTransparency = 1
+Shadow.Position = UDim2.new(0.5, 0, 0.5, 8)
+Shadow.Size = UDim2.new(1, 40, 1, 40)
+Shadow.ZIndex = -1
+Shadow.Image = "rbxassetid://1316045217"
+Shadow.ImageColor3 = Color3.fromRGB(0, 120, 255)
+Shadow.ImageTransparency = 0.4
