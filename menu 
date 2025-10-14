@@ -1,0 +1,406 @@
+-- ===== DKLLX Menu Movível Completo =====
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "DKLLX_FullMenu"
+ScreenGui.Parent = game.CoreGui
+
+-- ===== CONFIGURAÇÃO FACILITADA =====
+local Config = {
+    MenuName = "🧩 DKLLX Menu",
+    Subtitle = "🎵 Música & Diversão",
+    MenuColor = Color3.fromRGB(0,0,0),
+    TitleColor = Color3.fromRGB(0,50,200),
+    SubtitleColor = Color3.fromRGB(30,30,30),
+    ButtonColor = Color3.fromRGB(0,100,255),
+    BtnOpenColor = Color3.fromRGB(0,0,0),
+    EmojiOpen = "🟧",
+    EmojiClosed = "🟧⚠️",
+    Abas = 3, -- número de abas (ajustável)
+    BotoesPorAba = 3
+}
+
+-- ===== FRAME PRINCIPAL (MENU) =====
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0,400,0,220)
+MainFrame.Position = UDim2.new(0.3,0,0.25,0)
+MainFrame.BackgroundColor3 = Config.MenuColor
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0,25)
+MainCorner.Parent = MainFrame
+
+-- ===== TITULO =====
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1,0,0,45)
+Title.Position = UDim2.new(0,0,0,0)
+Title.BackgroundColor3 = Config.TitleColor
+Title.Text = Config.MenuName
+Title.TextColor3 = Color3.fromRGB(255,255,255)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 20
+Title.Parent = MainFrame
+
+local TitleCorner = Instance.new("UICorner")
+TitleCorner.CornerRadius = UDim.new(0,25)
+TitleCorner.Parent = Title
+
+-- ===== SUBTÍTULO =====
+local Subtitle = Instance.new("TextLabel")
+Subtitle.Size = UDim2.new(1,0,0,25)
+Subtitle.Position = UDim2.new(0,0,0,45)
+Subtitle.BackgroundColor3 = Config.SubtitleColor
+Subtitle.Text = Config.Subtitle
+Subtitle.TextColor3 = Color3.fromRGB(255,255,255)
+Subtitle.Font = Enum.Font.SourceSansBold
+Subtitle.TextSize = 16
+Subtitle.Parent = MainFrame
+
+local SubtitleCorner = Instance.new("UICorner")
+SubtitleCorner.CornerRadius = UDim.new(0,15)
+SubtitleCorner.Parent = Subtitle
+
+-- ===== ABAS LATERAIS =====
+local TabFrame = Instance.new("Frame")
+TabFrame.Size = UDim2.new(0,120,1,-70)
+TabFrame.Position = UDim2.new(0,0,0,70)
+TabFrame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+TabFrame.Parent = MainFrame
+
+local TabCorner = Instance.new("UICorner")
+TabCorner.CornerRadius = UDim.new(0,20)
+TabCorner.Parent = TabFrame
+
+local TabLayout = Instance.new("UIListLayout")
+TabLayout.Padding = UDim.new(0,5)
+TabLayout.Parent = TabFrame
+
+-- ===== CONTEÚDO =====
+local ContentFrame = Instance.new("Frame")
+ContentFrame.Size = UDim2.new(1,-120,1,-70)
+ContentFrame.Position = UDim2.new(0,120,0,70)
+ContentFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+ContentFrame.Parent = MainFrame
+
+local ContentCorner = Instance.new("UICorner")
+ContentCorner.CornerRadius = UDim.new(0,20)
+ContentCorner.Parent = ContentFrame
+
+local ContentLayout = Instance.new("UIListLayout")
+ContentLayout.Padding = UDim.new(0,5)
+ContentLayout.Parent = ContentFrame
+
+-- ===== SISTEMA DE ABAS =====
+local Tabs = {}
+local CurrentTab = nil
+
+local function CreateTab(tabName)
+    local Button = Instance.new("TextButton")
+    Button.Size = UDim2.new(1,0,0,30)
+    Button.Text = tabName
+    Button.BackgroundColor3 = Config.TitleColor
+    Button.TextColor3 = Color3.fromRGB(255,255,255)
+    Button.Font = Enum.Font.SourceSansBold
+    Button.TextSize = 16
+    Button.Parent = TabFrame
+
+    local TabContent = Instance.new("ScrollingFrame")
+    TabContent.Size = UDim2.new(1,0,1,0)
+    TabContent.Visible = false
+    TabContent.BackgroundTransparency = 1
+    TabContent.Parent = ContentFrame
+
+    local Layout = Instance.new("UIListLayout")
+    Layout.Padding = UDim.new(0,5)
+    Layout.Parent = TabContent
+
+    Tabs[tabName] = TabContent
+
+    Button.MouseButton1Click:Connect(function()
+        if CurrentTab then CurrentTab.Visible = false end
+        TabContent.Visible = true
+        CurrentTab = TabContent
+    end)
+end
+
+-- ===== BOTÕES FUNCIONAIS =====
+local function CreateButton(tabName,text,func)
+    local Btn = Instance.new("TextButton")
+    Btn.Size = UDim2.new(1,-10,0,35)
+    Btn.BackgroundColor3 = Config.ButtonColor
+    Btn.TextColor3 = Color3.fromRGB(255,255,255)
+    Btn.Font = Enum.Font.SourceSansBold
+    Btn.TextSize = 18
+    Btn.Text = text
+    Btn.Parent = Tabs[tabName]
+    Btn.MouseButton1Click:Connect(func)
+end
+
+-- ===== CRIAR ABAS =====
+CreateTab("Executor")
+CreateTab("Diversão")
+CreateTab("Configurações")
+
+-- ===== BOTÕES DA ABA EXECUTOR =====
+CreateButton("Executor", "Executar Chift Hub", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/danielfluxo222-eng/Chift-hub/main/chift%20executer%202"))()
+end)
+
+CreateButton("Executor", "Fechar Menu", function()
+    MainFrame.Visible = false
+end)
+
+CreateButton("Executor", "Executar", function()
+ -- ===== Framework de Menu DKLLX Moderno =====
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "DKLLX_ModernMenu"
+ScreenGui.Parent = game.CoreGui
+
+-- ===== CONFIGURAÇÃO =====
+local Config = {
+    MenuName = "⚠️windex",
+    Subtitle = "by zerin24",
+    Colors = {
+        Menu = Color3.fromRGB(0,0,0),
+        Title = Color3.fromRGB(0,150,255),
+        Subtitle = Color3.fromRGB(50,50,50),
+        Button = Color3.fromRGB(0,100,255),
+        BtnOpen = Color3.fromRGB(30,30,30),
+        ButtonHover = Color3.fromRGB(0,180,255)
+    },
+    EmojiOpen = "⚕️",
+    EmojiClosed = "⚕️🔒"
+}
+
+-- ===== FRAME PRINCIPAL =====
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0,450,0,280)
+MainFrame.Position = UDim2.new(0.25,0,0.25,0)
+MainFrame.BackgroundColor3 = Config.Colors.Menu
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0,20)
+MainCorner.Parent = MainFrame
+
+-- ===== TITULO =====
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1,0,0,50)
+Title.Position = UDim2.new(0,0,0,0)
+Title.BackgroundColor3 = Config.Colors.Title
+Title.Text = Config.MenuName
+Title.TextColor3 = Color3.fromRGB(255,255,255)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 22
+Title.Parent = MainFrame
+
+local TitleCorner = Instance.new("UICorner")
+TitleCorner.CornerRadius = UDim.new(0,20)
+TitleCorner.Parent = Title
+
+-- ===== SUBTITULO =====
+local Subtitle = Instance.new("TextLabel")
+Subtitle.Size = UDim2.new(1,0,0,30)
+Subtitle.Position = UDim2.new(0,0,0,50)
+Subtitle.BackgroundColor3 = Config.Colors.Subtitle
+Subtitle.Text = Config.Subtitle
+Subtitle.TextColor3 = Color3.fromRGB(255,255,255)
+Subtitle.Font = Enum.Font.GothamSemibold
+Subtitle.TextSize = 16
+Subtitle.Parent = MainFrame
+
+local SubtitleCorner = Instance.new("UICorner")
+SubtitleCorner.CornerRadius = UDim.new(0,15)
+SubtitleCorner.Parent = Subtitle
+
+-- ===== ABAS LATERAIS =====
+local TabFrame = Instance.new("Frame")
+TabFrame.Size = UDim2.new(0,140,1,-80)
+TabFrame.Position = UDim2.new(0,0,0,80)
+TabFrame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+TabFrame.Parent = MainFrame
+
+local TabCorner = Instance.new("UICorner")
+TabCorner.CornerRadius = UDim.new(0,15)
+TabCorner.Parent = TabFrame
+
+local TabLayout = Instance.new("UIListLayout")
+TabLayout.Padding = UDim.new(0,5)
+TabLayout.Parent = TabFrame
+
+-- ===== CONTEÚDO =====
+local ContentFrame = Instance.new("Frame")
+ContentFrame.Size = UDim2.new(1,-140,1,-80)
+ContentFrame.Position = UDim2.new(0,140,0,80)
+ContentFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+ContentFrame.Parent = MainFrame
+
+local ContentCorner = Instance.new("UICorner")
+ContentCorner.CornerRadius = UDim.new(0,15)
+ContentCorner.Parent = ContentFrame
+
+local ContentLayout = Instance.new("UIListLayout")
+ContentLayout.Padding = UDim.new(0,8)
+ContentLayout.Parent = ContentFrame
+
+-- ===== SISTEMA DE ABAS =====
+local Tabs = {}
+local CurrentTab = nil
+
+local function CreateTab(tabName)
+    local Button = Instance.new("TextButton")
+    Button.Size = UDim2.new(1,0,0,35)
+    Button.Text = tabName
+    Button.BackgroundColor3 = Config.Colors.Title
+    Button.TextColor3 = Color3.fromRGB(255,255,255)
+    Button.Font = Enum.Font.GothamBold
+    Button.TextSize = 16
+    Button.Parent = TabFrame
+
+    local TabContent = Instance.new("ScrollingFrame")
+    TabContent.Size = UDim2.new(1,0,1,0)
+    TabContent.Visible = false
+    TabContent.BackgroundTransparency = 1
+    TabContent.Parent = ContentFrame
+
+    local Layout = Instance.new("UIListLayout")
+    Layout.Padding = UDim.new(0,8)
+    Layout.Parent = TabContent
+
+    Tabs[tabName] = TabContent
+
+    Button.MouseButton1Click:Connect(function()
+        if CurrentTab then CurrentTab.Visible = false end
+        TabContent.Visible = true
+        CurrentTab = TabContent
+    end)
+end
+
+-- ===== FUNÇÃO PARA CRIAR BOTÕES COM SCRIPT =====
+local function CreateButton(tabName, text, func)
+    local Btn = Instance.new("TextButton")
+    Btn.Size = UDim2.new(1,-10,0,40)
+    Btn.BackgroundColor3 = Config.Colors.Button
+    Btn.TextColor3 = Color3.fromRGB(255,255,255)
+    Btn.Font = Enum.Font.GothamBold
+    Btn.TextSize = 18
+    Btn.Text = text
+    Btn.Parent = Tabs[tabName]
+
+    Btn.MouseEnter:Connect(function()
+        Btn.BackgroundColor3 = Config.Colors.ButtonHover
+    end)
+    Btn.MouseLeave:Connect(function()
+        Btn.BackgroundColor3 = Config.Colors.Button
+    end)
+
+    Btn.MouseButton1Click:Connect(func)
+end
+
+-- ===== FUNÇÕES DE FACILIDADE =====
+function AddTab(name)
+    CreateTab(name)
+end
+
+function AddButtonToTab(tabName,text,func)
+    CreateButton(tabName,text,func)
+end
+
+function RemoveButton(tabName,btnText)
+    if Tabs[tabName] then
+        for _,btn in pairs(Tabs[tabName]:GetChildren()) do
+            if btn:IsA("TextButton") and btn.Text == btnText then
+                btn:Destroy()
+            end
+        end
+    end
+end
+
+-- ===== BOTÃO MOVEL ABRIR/FECHAR =====
+local OpenCloseBtn = Instance.new("TextButton")
+OpenCloseBtn.Size = UDim2.new(0,50,0,50)
+OpenCloseBtn.Position = UDim2.new(0,20,0,300)
+OpenCloseBtn.BackgroundColor3 = Config.Colors.BtnOpen
+OpenCloseBtn.TextColor3 = Color3.fromRGB(255,255,255)
+OpenCloseBtn.Font = Enum.Font.GothamBold
+OpenCloseBtn.TextSize = 20
+OpenCloseBtn.Text = Config.EmojiOpen
+OpenCloseBtn.Parent = ScreenGui
+
+local BtnCorner = Instance.new("UICorner")
+BtnCorner.CornerRadius = UDim.new(0,15)
+BtnCorner.Parent = OpenCloseBtn
+
+OpenCloseBtn.Active = true
+OpenCloseBtn.Draggable = true
+
+local MenuOpen = true
+OpenCloseBtn.MouseButton1Click:Connect(function()
+    MenuOpen = not MenuOpen
+    MainFrame.Visible = MenuOpen
+    OpenCloseBtn.Text = MenuOpen and Config.EmojiOpen or Config.EmojiClosed
+end)
+
+-- ===== EXEMPLO DE ABAS E BOTÕES =====
+AddTab("Executor")
+AddTab("Diversão")
+
+AddButtonToTab("Executor","Chift Hub",function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/danielfluxo222-eng/Chift-hub/main/chift%20executer%202"))()
+end)
+
+AddButtonToTab("Diversão","Tocar Música",function()
+    local s = Instance.new("Sound")
+    s.SoundId = "rbxassetid://1810103234"
+    s.Parent = game.Workspace
+    s:Play()
+end)
+
+-- Abrir primeira aba por padrão
+CurrentTab = Tabs["Executor"]
+CurrentTab.Visible = true   
+end)
+
+CreateButton("Diversão", "Mensagem no Console", function()
+    print("Você clicou em um botão divertido! 😎")
+end)
+
+-- ===== BOTÕES DA ABA CONFIGURAÇÕES =====
+CreateButton("Configurações", "Reiniciar GUI", function()
+    ScreenGui:Destroy()
+    print("Menu recarregado.")
+end)
+
+-- Exibir primeira aba
+Tabs["Executor"].Visible = true
+CurrentTab = Tabs["Executor"]
+
+-- ===== BOTÃO REDONDO MOVÍVEL ABRIR/FECHAR =====
+local OpenCloseBtn = Instance.new("TextButton")
+OpenCloseBtn.Size = UDim2.new(0,50,0,50)
+OpenCloseBtn.Position = UDim2.new(0,20,0,250)
+OpenCloseBtn.BackgroundColor3 = Config.BtnOpenColor
+OpenCloseBtn.TextColor3 = Color3.fromRGB(255,255,255)
+OpenCloseBtn.Font = Enum.Font.SourceSansBold
+OpenCloseBtn.TextSize = 18
+OpenCloseBtn.Text = Config.EmojiOpen
+OpenCloseBtn.Parent = ScreenGui
+
+local BtnCorner = Instance.new("UICorner")
+BtnCorner.CornerRadius = UDim.new(0,12)
+BtnCorner.Parent = OpenCloseBtn
+
+OpenCloseBtn.Active = true
+OpenCloseBtn.Draggable = true
+
+local MenuOpen = true
+OpenCloseBtn.MouseButton1Click:Connect(function()
+    MenuOpen = not MenuOpen
+    MainFrame.Visible = MenuOpen
+    OpenCloseBtn.Text = MenuOpen and Config.EmojiOpen or Config.EmojiClosed
+end)
