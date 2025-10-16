@@ -1,0 +1,74 @@
+--// Caixa de Som Universal
+-- by Zerinho112
+
+-- Cria ScreenGui
+local SoundGui = Instance.new("ScreenGui")
+SoundGui.Name = "CaixaDeSom"
+SoundGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Frame Principal
+local Frame = Instance.new("Frame", SoundGui)
+Frame.Size = UDim2.new(0, 300, 0, 150)
+Frame.Position = UDim2.new(0.5, -150, 0.5, -75)
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Active = true
+Frame.Draggable = true
+
+-- Título
+local Title = Instance.new("TextLabel", Frame)
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.BackgroundColor3 = Color3.fromRGB(25, 25, 112)
+Title.Text = "🔊 Caixa de Som"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 18
+
+-- Caixa de texto pra ID
+local TextBox = Instance.new("TextBox", Frame)
+TextBox.Size = UDim2.new(1, -20, 0, 30)
+TextBox.Position = UDim2.new(0, 10, 0, 50)
+TextBox.PlaceholderText = "Digite o ID da Música"
+TextBox.Text = ""
+TextBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBox.Font = Enum.Font.Gotham
+TextBox.TextSize = 16
+
+-- Botão Tocar
+local PlayBtn = Instance.new("TextButton", Frame)
+PlayBtn.Size = UDim2.new(0.5, -15, 0, 30)
+PlayBtn.Position = UDim2.new(0, 10, 0, 100)
+PlayBtn.Text = "▶️ Tocar"
+PlayBtn.BackgroundColor3 = Color3.fromRGB(0, 128, 255)
+PlayBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+PlayBtn.Font = Enum.Font.GothamBold
+PlayBtn.TextSize = 16
+
+-- Botão Parar
+local StopBtn = Instance.new("TextButton", Frame)
+StopBtn.Size = UDim2.new(0.5, -15, 0, 30)
+StopBtn.Position = UDim2.new(0.5, 5, 0, 100)
+StopBtn.Text = "⏹️ Parar"
+StopBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+StopBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+StopBtn.Font = Enum.Font.GothamBold
+StopBtn.TextSize = 16
+
+-- Criar Sound
+local Sound = Instance.new("Sound")
+Sound.Parent = game.Workspace
+Sound.Volume = 5
+
+-- Funções
+PlayBtn.MouseButton1Click:Connect(function()
+    local id = TextBox.Text
+    if tonumber(id) then
+        Sound.SoundId = "rbxassetid://"..id
+        Sound:Play()
+    end
+end)
+
+StopBtn.MouseButton1Click:Connect(function()
+    Sound:Stop()
+end)
