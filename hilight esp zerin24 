@@ -1,0 +1,30 @@
+--// Highlight ESP Roblox (Vermelho)
+-- Criado por Zerin
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+-- Função para criar highlight
+local function criarHighlight(obj)
+    if obj:FindFirstChildWhichIsA("Highlight") then return end -- Evita duplicar
+    local highlight = Instance.new("Highlight")
+    highlight.Name = "ESPHighlight"
+    highlight.Adornee = obj
+    highlight.FillColor = Color3.fromRGB(255, 0, 0) -- Interior vermelho
+    highlight.FillTransparency = 0.5 -- Transparência do interior
+    highlight.OutlineColor = Color3.fromRGB(255, 0, 0) -- Bordas vermelhas
+    highlight.OutlineTransparency = 0 -- Bordas visíveis
+    highlight.Parent = obj
+end
+
+-- Loop para aplicar highlight em todos os personagens
+local function aplicarESP()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= Players.LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            criarHighlight(player.Character)
+        end
+    end
+end
+
+-- Atualiza constantemente
+RunService.RenderStepped:Connect(aplicarESP)
