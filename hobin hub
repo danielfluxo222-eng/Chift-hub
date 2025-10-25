@@ -1,0 +1,196 @@
+-- Criado por zerin24
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "hub_lua"
+ScreenGui.Parent = game.CoreGui
+
+-- ===== CONFIGURAÇÃO =====
+local Config = {
+    MenuName = "hobin hub",
+    Subtitle = "by zerin24",
+    MenuColor = Color3.fromRGB(0, 0, 0),
+    TitleColor = Color3.fromRGB(25,25,25),
+    SubtitleColor = Color3.fromRGB(10, 10, 10),
+    TabColor = Color3.fromRGB(20,20,20),
+    ButtonColor = Color3.fromRGB(40, 40, 40),
+    ButtonHover = Color3.fromRGB(80, 80, 80),
+    BtnOpenColor = Color3.fromRGB(15, 15, 15),
+    EmojiOpen = "🎩",
+    EmojiClosed = "🎩"
+}
+
+-- ===== FRAME PRINCIPAL =====
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 700, 0, 400)
+MainFrame.Position = UDim2.new(0.25, 0, 0.3, 0)
+MainFrame.BackgroundColor3 = Config.MenuColor
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = MainFrame
+
+-- ===== TÍTULO =====
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 45)
+Title.BackgroundColor3 = Config.TitleColor
+Title.Text = Config.MenuName
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 22
+Title.Parent = MainFrame
+
+-- ===== SUBTÍTULO =====
+local Subtitle = Instance.new("TextLabel")
+Subtitle.Size = UDim2.new(1, 0, 0, 25)
+Subtitle.Position = UDim2.new(0, 0, 0, 45)
+Subtitle.BackgroundColor3 = Config.SubtitleColor
+Subtitle.Text = Config.Subtitle
+Subtitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+Subtitle.Font = Enum.Font.Gotham
+Subtitle.TextSize = 16
+Subtitle.Parent = MainFrame
+
+-- ===== ABAS (LADO ESQUERDO) =====
+local TabFrame = Instance.new("Frame")
+TabFrame.Size = UDim2.new(0, 180, 1, -80)
+TabFrame.Position = UDim2.new(0, 10, 0, 75)
+TabFrame.BackgroundColor3 = Config.TabColor
+TabFrame.Parent = MainFrame
+
+local TabCorner = Instance.new("UICorner")
+TabCorner.CornerRadius = UDim.new(0, 10)
+TabCorner.Parent = TabFrame
+
+local TabLayout = Instance.new("UIListLayout")
+TabLayout.Padding = UDim.new(0, 8)
+TabLayout.Parent = TabFrame
+
+-- ===== CONTEÚDO (LADO DIREITO) =====
+local ContentFrame = Instance.new("Frame")
+ContentFrame.Size = UDim2.new(1, -210, 1, -80)
+ContentFrame.Position = UDim2.new(0, 200, 0, 75)
+ContentFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+ContentFrame.Parent = MainFrame
+
+local ContentCorner = Instance.new("UICorner")
+ContentCorner.CornerRadius = UDim.new(0, 10)
+ContentCorner.Parent = ContentFrame
+
+-- ===== SISTEMA DE ABAS =====
+local Tabs = {}
+local CurrentTab = nil
+
+local function CreateTab(tabName)
+    local TabBtn = Instance.new("TextButton")
+    TabBtn.Size = UDim2.new(1, -10, 0, 35)
+    TabBtn.Text = tabName
+    TabBtn.BackgroundColor3 = Config.ButtonColor
+    TabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TabBtn.Font = Enum.Font.GothamBold
+    TabBtn.TextSize = 16
+    TabBtn.Parent = TabFrame
+
+    TabBtn.MouseEnter:Connect(function()
+        TabBtn.BackgroundColor3 = Config.ButtonHover
+    end)
+    TabBtn.MouseLeave:Connect(function()
+        TabBtn.BackgroundColor3 = Config.ButtonColor
+    end)
+
+    local TabContent = Instance.new("ScrollingFrame")
+    TabContent.Size = UDim2.new(1, 0, 1, 0)
+    TabContent.Visible = false
+    TabContent.BackgroundTransparency = 1
+    TabContent.CanvasSize = UDim2.new(0, 0, 2, 0)
+    TabContent.Parent = ContentFrame
+
+    local Layout = Instance.new("UIListLayout")
+    Layout.Padding = UDim.new(0, 8)
+    Layout.Parent = TabContent
+
+    Tabs[tabName] = TabContent
+
+    TabBtn.MouseButton1Click:Connect(function()
+        if CurrentTab then CurrentTab.Visible = false end
+        TabContent.Visible = true
+        CurrentTab = TabContent
+    end)
+end
+
+-- ===== BOTÕES DAS FUNÇÕES =====
+local function CreateButton(tabName, text, func)
+    if not Tabs[tabName] then return end
+    local Btn = Instance.new("TextButton")
+    Btn.Size = UDim2.new(1, -15, 0, 40)
+    Btn.BackgroundColor3 = Config.ButtonColor
+    Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Btn.Font = Enum.Font.GothamBold
+    Btn.TextSize = 18
+    Btn.Text = text
+    Btn.Parent = Tabs[tabName]
+
+    Btn.MouseEnter:Connect(function()
+        Btn.BackgroundColor3 = Config.ButtonHover
+    end)
+    Btn.MouseLeave:Connect(function()
+        Btn.BackgroundColor3 = Config.ButtonColor
+    end)
+
+    Btn.MouseButton1Click:Connect(func)
+end
+
+-- ===== BOTÃO ABRIR / FECHAR =====
+local OpenCloseBtn = Instance.new("TextButton")
+OpenCloseBtn.Size = UDim2.new(0, 60, 0, 60)
+OpenCloseBtn.Position = UDim2.new(0, 25, 0, 250)
+OpenCloseBtn.BackgroundColor3 = Config.BtnOpenColor
+OpenCloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+OpenCloseBtn.Font = Enum.Font.GothamBold
+OpenCloseBtn.TextSize = 26
+OpenCloseBtn.Text = Config.EmojiOpen
+OpenCloseBtn.Parent = ScreenGui
+OpenCloseBtn.Active = true
+OpenCloseBtn.Draggable = true
+
+local BtnCorner = Instance.new("UICorner")
+BtnCorner.CornerRadius = UDim.new(0, 15)
+BtnCorner.Parent = OpenCloseBtn
+
+local aberto = true
+OpenCloseBtn.MouseButton1Click:Connect(function()
+    aberto = not aberto
+    MainFrame.Visible = aberto
+    OpenCloseBtn.Text = aberto and Config.EmojiOpen or Config.EmojiClosed
+end)
+
+-- crie sua aba
+
+CreateTab("Principal")
+CreateTab("bistecone")
+CreateTab("ghost")
+
+                         ====== (aba 1) ======
+CreateButton("Executor", "Executar Chift Hub", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/danielfluxo222-eng/Chift-hub/main/chift%20executer%202"))()
+end)
+                                 
+                           ====== (aba 2) ======
+CreateButton("Diversão", "Tocar Música 🎵", function()
+    local s = Instance.new("Sound")
+    s.SoundId = "rbxassetid://1810103234"
+    s.Parent = game.Workspace
+    s:Play()
+end)
+
+                            ====== (aba 3) ======
+CreateButton("Configurações", "Fechar GUI ❌", function()
+    ScreenGui:Destroy()
+end)
+
+-- Mostrar primeira aba automaticamente
+Tabs["Executor"].Visible = true
+CurrentTab = Tabs["Executor"]
