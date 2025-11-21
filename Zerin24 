@@ -1,0 +1,90 @@
+-- 🧭 LunexHub - Coordenadas ao vivo (v2)
+-- Mostra posição atual do jogador + botão de copiar
+-- Feito por Zerin24 (para Daniel)
+
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local StarterGui = game:GetService("StarterGui")
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local HRP = Character:WaitForChild("HumanoidRootPart")
+
+-- UI
+local gui = Instance.new("ScreenGui")
+gui.Name = "LunexHub_Coords"
+gui.ResetOnSpawn = false
+gui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 230, 0, 110)
+frame.Position = UDim2.new(0.05, 0, 0.75, 0)
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+frame.Parent = gui
+
+local corner = Instance.new("UICorner", frame)
+corner.CornerRadius = UDim.new(0, 10)
+
+-- Título
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 25)
+title.BackgroundColor3 = Color3.fromRGB(50, 205, 90)
+title.Text = "📍 LunexHub - Posição Atual"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 14
+title.Parent = frame
+
+-- Coordenadas ao vivo
+local coords = Instance.new("TextLabel")
+coords.Size = UDim2.new(1, -10, 0, 50)
+coords.Position = UDim2.new(0, 5, 0, 30)
+coords.BackgroundTransparency = 1
+coords.Text = "X: 0 | Y: 0 | Z: 0"
+coords.TextColor3 = Color3.fromRGB(180, 255, 180)
+coords.Font = Enum.Font.Gotham
+coords.TextSize = 14
+coords.TextWrapped = true
+coords.Parent = frame
+
+-- Botão copiar
+local copyBtn = Instance.new("TextButton")
+copyBtn.Size = UDim2.new(0.9, 0, 0, 25)
+copyBtn.Position = UDim2.new(0.05, 0, 1, -30)
+copyBtn.BackgroundColor3 = Color3.fromRGB(60, 200, 100)
+copyBtn.Text = "📋 Copiar Coordenadas"
+copyBtn.TextColor3 = Color3.new(1, 1, 1)
+copyBtn.Font = Enum.Font.GothamBold
+copyBtn.TextSize = 13
+copyBtn.Parent = frame
+
+Instance.new("UICorner", copyBtn)
+
+-- Atualizar coordenadas ao andar
+task.spawn(function()
+	while task.wait(0.1) do
+		if Character and HRP then
+			local pos = HRP.Position
+			coords.Text = string.format("X: %.1f  |  Y: %.1f  |  Z: %.1f", pos.X, pos.Y, pos.Z)
+		else
+			Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+			HRP = Character:WaitForChild("HumanoidRootPart")
+		end
+	end
+end)
+
+-- Copiar ao clicar
+copyBtn.MouseButton1Click:Connect(function()
+	if HRP then
+		local pos = HRP.Position
+		local text = string.format("Vector3.new(%.1f, %.1f, %.1f)", pos.X, pos.Y, pos.Z)
+		setclipboard(text)
+		StarterGui:SetCore("SendNotification", {
+			Title = "LunexHub",
+			Text = "📋 Coordenadas copiadas:\n" .. text,
+			Duration = 3
+		})
+	end
+end)
